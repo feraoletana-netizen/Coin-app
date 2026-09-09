@@ -1,0 +1,73 @@
+let coins = Number(localStorage.getItem("coins")) || 0;
+let lastBonus = localStorage.getItem("lastBonus") || "";
+
+function updateCoins() {
+  document.getElementById("coins").textContent = coins;
+  localStorage.setItem("coins", coins);
+}
+
+function addCoin() {
+  coins += 1;
+  updateCoins();
+  document.getElementById("message").textContent = "🪙 +1 Coin!";
+}
+
+function dailyBonus() {
+  const today = new Date().toISOString().split("T")[0];
+
+  if (lastBonus === today) {
+    document.getElementById("message").textContent =
+      "❌ Daily Bonus har'a fudhatameera.";
+    return;
+  }
+
+  coins += 50;
+  lastBonus = today;
+
+  localStorage.setItem("lastBonus", lastBonus);
+  updateCoins();
+
+  document.getElementById("message").textContent =
+    "🎁 +50 Coins argatte!";
+}
+
+function watchAd() {
+  alert("📺 Demo Ad xumurame!");
+
+  coins += 10;
+  updateCoins();
+
+  document.getElementById("message").textContent =
+    "🎉 +10 Coins argatte!";
+}
+
+function withdraw() {
+  const amount = Number(document.getElementById("amount").value);
+  const method = document.getElementById("method").value.trim();
+
+  if (amount < 100) {
+    document.getElementById("message").textContent =
+      "❌ Minimum withdrawal 100 coins.";
+    return;
+  }
+
+  if (amount > coins) {
+    document.getElementById("message").textContent =
+      "❌ Coins gahaa hin qabdu.";
+    return;
+  }
+
+  if (method === "") {
+    document.getElementById("message").textContent =
+      "❌ Telebirr ykn Bank galchi.";
+    return;
+  }
+
+  coins -= amount;
+  updateCoins();
+
+  document.getElementById("message").textContent =
+    "✅ Withdraw request galmaa'e. Method: " + method;
+}
+
+updateCoins();
