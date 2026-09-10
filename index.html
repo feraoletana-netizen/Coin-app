@@ -1,79 +1,117 @@
-body {
-  font-family: Arial, sans-serif;
-  background: #f2f4f7;
-  text-align: center;
-  margin: 0;
-  padding: 20px;
-}
+  <!DOCTYPE html>
+<html lang="om">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reward Game</title>
 
-.container {
-  max-width: 450px;
-  margin: auto;
-}
+  <link rel="stylesheet" href="style.css">
 
-h1 {
-  color: #222;
-  margin-bottom: 25px;
-}
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
-.coin-box {
-  background: white;
-  padding: 20px;
-  margin-bottom: 20px;
-  border-radius: 15px;
-  font-size: 20px;
-  font-weight: bold;
-}
+    const firebaseConfig = {
+      apiKey: "AIzaSyCKXC4ayhYXnLP-87q0C607xjimuGpwfmE",
+      authDomain: "froreward-3c873.firebaseapp.com",
+      projectId: "froreward-3c873",
+      storageBucket: "froreward-3c873.firebasestorage.app",
+      messagingSenderId: "552089097161",
+      appId: "1:552089097161:web:9db8695b2f314d44ca8e18",
+      measurementId: "G-P8C6R796NG"
+    };
 
-#coins {
-  display: block;
-  color: #f59e0b;
-  font-size: 40px;
-  margin-top: 8px;
-}
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-.section {
-  background: white;
-  padding: 15px;
-  margin-top: 15px;
-  border-radius: 15px;
-}
+    window.firebaseAuth = {
+      auth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged
+    };
+  </script>
+</head>
 
-h2 {
-  color: #333;
-  font-size: 20px;
-}
+<body>
 
-button {
-  width: 90%;
-  max-width: 350px;
-  padding: 15px;
-  margin: 8px;
-  border: none;
-  border-radius: 12px;
-  background: #2563eb;
-  color: white;
-  font-size: 17px;
-  font-weight: bold;
-}
+  <div class="container">
 
-button:active {
-  transform: scale(0.97);
-}
+    <h1>🎮 Reward Game</h1>
 
-input {
-  width: 85%;
-  max-width: 320px;
-  padding: 13px;
-  margin: 6px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  font-size: 16px;
-  box-sizing: border-box;
-}
+    <div class="coin-box">
+      🪙 Your Coins
+      <span id="coins">50</span>
+    </div>
 
-#message {
-  margin-top: 20px;
-  font-weight: bold;
-  color: #16a34a;
-}
+    <div class="section">
+      <h2>🎁 Daily Reward</h2>
+      <button onclick="dailyBonus()">
+        Claim Daily Reward +50
+      </button>
+    </div>
+
+    <div class="section">
+      <h2>📺 Earn Coins</h2>
+      <button onclick="watchAd()">
+        Watch Ad +10
+      </button>
+    </div>
+
+    <div class="section">
+      <h2>💰 Withdraw</h2>
+
+      <input
+        type="number"
+        id="amount"
+        placeholder="Amount of Coins"
+      >
+
+      <select id="method">
+        <option value="">Payment method</option>
+        <option value="Telebirr">Telebirr</option>
+        <option value="Bank">Bank</option>
+      </select>
+
+      <button onclick="withdraw()">
+        Withdraw
+      </button>
+    </div>
+
+    <div class="section">
+      <h2>👤 Account</h2>
+
+      <p id="welcome">👤 Welcome, Guest!</p>
+
+      <input
+        type="email"
+        id="username"
+        placeholder="Email"
+      >
+
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+      >
+
+      <button onclick="signup()">Sign Up</button>
+      <button onclick="login()">Login</button>
+      <button onclick="logout()">Logout</button>
+    </div>
+
+    <p id="message"></p>
+
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
