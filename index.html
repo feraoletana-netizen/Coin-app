@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="om">
 <head>
   <meta charset="UTF-8">
@@ -9,6 +9,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
     import {
       getAuth,
       createUserWithEmailAndPassword,
@@ -53,6 +54,7 @@
 
     <div class="section">
       <h2>🎁 Daily Reward</h2>
+
       <button onclick="dailyBonus()">
         Claim Daily Reward +50
       </button>
@@ -60,6 +62,7 @@
 
     <div class="section">
       <h2>📺 Earn Coins</h2>
+
       <button onclick="watchAd()">
         Watch Ad +10
       </button>
@@ -74,21 +77,52 @@
         placeholder="Amount of Coins"
       >
 
-      <select id="method">
+      <select id="method" onchange="paymentMethodChanged()">
         <option value="">Payment method</option>
         <option value="Telebirr">Telebirr</option>
         <option value="Bank">Bank</option>
       </select>
 
+      <!-- Telebirr -->
+      <div id="telebirrFields" style="display:none;">
+
+        <input
+          type="tel"
+          id="telebirrNumber"
+          placeholder="Telebirr Number"
+        >
+
+      </div>
+
+      <!-- Bank -->
+      <div id="bankFields" style="display:none;">
+
+        <input
+          type="text"
+          id="bankName"
+          placeholder="Bank Name"
+        >
+
+        <input
+          type="text"
+          id="bankAccount"
+          placeholder="Bank Account Number"
+        >
+
+      </div>
+
       <button onclick="withdraw()">
         Withdraw
       </button>
+
     </div>
 
     <div class="section">
       <h2>👤 Account</h2>
 
-      <p id="welcome">👤 Welcome, Guest!</p>
+      <p id="welcome">
+        👤 Welcome, Guest!
+      </p>
 
       <input
         type="email"
@@ -103,8 +137,11 @@
       >
 
       <button onclick="signup()">Sign Up</button>
+
       <button onclick="login()">Login</button>
+
       <button onclick="logout()">Logout</button>
+
     </div>
 
     <p id="message"></p>
