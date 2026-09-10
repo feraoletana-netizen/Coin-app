@@ -1,33 +1,50 @@
-let coins = Number(localStorage.getItem("coins")) || 0;
+let coins = Number(localStorage.getItem("coins")) || 50;
 let lastBonus = localStorage.getItem("lastBonus") || "";
+let withdrawalHistory = JSON.parse(
+  localStorage.getItem("withdrawalHistory") || "[]"
+);
+
+let authReady = false;
 
 function updateCoins() {
-  document.getElementById("coins").textContent = coins;
+  const coinElement = document.getElementById("coins");
+
+  if (coinElement) {
+    coinElement.textContent = coins;
+  }
+
   localStorage.setItem("coins", coins);
+}
+
+function showMessage(text) {
+  const message = document.getElementById("message");
+
+  if (message) {
+    message.textContent = text;
+  }
 }
 
 function addCoin() {
   coins += 1;
   updateCoins();
-  document.getElementById("message").textContent = "🪙 +1 Coin!";
+  showMessage("🪙 +1 Coin!");
 }
 
 function dailyBonus() {
   const today = new Date().toISOString().split("T")[0];
 
   if (lastBonus === today) {
-    document.getElementById("message").textContent =
-      "❌ Daily Bonus har'a fudhatameera.";
+    showMessage("❌ Daily Bonus har'a fudhatameera.");
     return;
   }
 
   coins += 50;
   lastBonus = today;
-  localStorage.setItem("lastBonus", lastBonus);
-  updateCoins();
 
-  document.getElementById("message").textContent =
-    "🎁 +50 Coins argatte!";
+  localStorage.setItem("lastBonus", lastBonus);
+
+  updateCoins();
+  showMessage("🎁 +50 Coins argatte!");
 }
 
 function watchAd() {
@@ -36,76 +53,208 @@ function watchAd() {
   coins += 10;
   updateCoins();
 
-  document.getElementById("message").textContent =
-    "🎉 +10 Coins argatte!";
+  showMessage("🎉 +10 Coins argatte!");
 }
 
 function withdraw() {
-  const amount = Number(document.getElementById("amount").value);
-  const method = document.getElementById("method").value.trim();
+  const amountElement = document.getElementById("amount");
+  const methodElement = document.getElementById("method");
 
-  if (amount < 100) {
-    document.getElementById("message").textContent =
-      "❌ Minimum withdrawal 100 coins.";
+  if (!amountElement || !methodElement) {
+    showMessage("❌ Withdrawal form hin argamne.");
+    return;
+  }
+
+  const amount = Number(amountElement.value);
+  const method = methodElement.value.trim();
+
+  if (amount < 1000) {
+    showMessage("❌ Minimum withdrawal 1000 Coins.");
     return;
   }
 
   if (amount > coins) {
-    document.getElementById("message").textContent =
-      "❌ Coins gahaa hin qabdu.";
+    showMessage("❌ Coins gahaa hin qabdu.");
     return;
   }
 
   if (method === "") {
-    document.getElementById("message").textContent =
-      "❌ Telebirr ykn Bank galchi.";
+    showMessage("❌ Telebirr ykn Bank filadhu.");
     return;
   }
 
   coins -= amount;
   updateCoins();
 
-  document.getElementById("message").textContent =
-    "✅ Withdraw request galmaa'e.";
+  const request = {
+    amount: amount,
+    method: method,
+    date: new Date().toLocaleString()
+  };
+
+  withdrawalHistory.push(request);
+
+  localStorage.setItem(
+    "withdrawalHistory",
+    JSON.stringify(withdrawalHistory)
+  );
+
+  amountElement.value = "";
+
+  showMessage("✅ Withdraw request galmaa'e!");
 }
 
-function signup() {
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value;
+async function signup() {
+  const emailElement = document.getElementById("username");
+  const passwordElement = document.getElementById("password");
 
-  if (username === "" || password === "") {
-    document.getElementById("message").textContent =
-      "❌ Username fi Password guuti.";
+  if (!emailElement || !passwordElement) {
+    showMessage("❌ Email fi Password hin argamne.");
     return;
   }
 
-  localStorage.setItem("username", username);
-  localStorage.setItem("password", password);
+  const email = emailElement.value.trim();
+  const password = passwordElement.value;
 
-  document.getElementById("message").textContent =
-    "✅ Account uumame!";
-}
-
-function login() {
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value;
-
-  const savedUsername = localStorage.getItem("username");
-  const savedPassword = localStorage.getItem("password");
-
-  if (username === savedUsername && password === savedPassword) {
-    document.getElementById("message").textContent =
-      "✅ Login milkaa'e!";
-
-    document.getElementById("welcome").textContent =
-      "👤 Welcome, " + username + "!";
-  } else {
-    document.getElementById("message").textContent =
-      "❌ Username ykn Password sirrii miti.";
+  if (email === "" || password === "") {
+    showMessage("❌ Email fi Password guuti.");
+    return;
   }
-updateCoins();function logout() {
-    localStorage.removeItem("loggedIn");
-    localStorage.removeItem("username");
-    alert("Logout milkaa'e!");<link rel="stylesheet" href="style.css">
-    location.reload();
+
+  if (password.length < 6) {
+    showMessage("❌ Password yoo xiqqaate 6 characters qabaachuu qaba.");
+    return;
+  }
+
+  if (!authReady) {
+    showMessage("⏳ Firebase qophaa'aa jira. Mee xiqqoo eegi.");
+    return;
+  }
+
+  try {
+    const fb = window.firebaseAuth;
+
+    await fb.createUserWithEmailAndPassword(
+      fb.auth,
+      email,
+      password
+    );
+
+    showMessage("✅ Account uumame!");
+  } catch (error) {
+    console.error(error);
+
+    if (error.code === "auth/email-already-in-use") {
+      showMessage("❌ Email kun duraan account qaba.");
+    } else if (error.code === "auth/invalid-email") {
+      showMessage("❌ Email sirrii galchi.");
+    } else if (error.code === "auth/weak-password") {
+      showMessage("❌ Password cimaa fayyadami.");
+    } else {
+      showMessage("❌ Account uumuu irratti rakkoon uumame.");
+    }
+  }
 }
+
+async function login() {
+  const emailElement = document.getElementById("username");
+  const passwordElement = document.getElementById("password");
+
+  if (!emailElement || !passwordElement) {
+    showMessage("❌ Email fi Password hin argamne.");
+    return;
+  }
+
+  const email = emailElement.value.trim();
+  const password = passwordElement.value;
+
+  if (email === "" || password === "") {
+    showMessage("❌ Email fi Password guuti.");
+    return;
+  }
+
+  if (!authReady) {
+    showMessage("⏳ Firebase qophaa'aa jira. Mee xiqqoo eegi.");
+    return;
+  }
+
+  try {
+    const fb = window.firebaseAuth;
+
+    await fb.signInWithEmailAndPassword(
+      fb.auth,
+      email,
+      password
+    );
+
+    showMessage("✅ Login milkaa'e!");
+  } catch (error) {
+    console.error(error);
+
+    if (
+      error.code === "auth/invalid-credential" ||
+      error.code === "auth/wrong-password" ||
+      error.code === "auth/user-not-found"
+    ) {
+      showMessage("❌ Email ykn Password sirrii miti.");
+    } else if (error.code === "auth/invalid-email") {
+      showMessage("❌ Email sirrii galchi.");
+    } else {
+      showMessage("❌ Login irratti rakkoon uumame.");
+    }
+  }
+}
+
+async function logout() {
+  if (!authReady) {
+    showMessage("⏳ Firebase qophaa'aa jira.");
+    return;
+  }
+
+  try {
+    const fb = window.firebaseAuth;
+
+    await fb.signOut(fb.auth);
+
+    showMessage("✅ Logout milkaa'e!");
+  } catch (error) {
+    console.error(error);
+    showMessage("❌ Logout irratti rakkoon uumame.");
+  }
+}
+
+function initFirebaseAuth() {
+  if (!window.firebaseAuth) {
+    setTimeout(initFirebaseAuth, 100);
+    return;
+  }
+
+  const fb = window.firebaseAuth;
+
+  authReady = true;
+
+  fb.onAuthStateChanged(fb.auth, function (user) {
+    const welcome = document.getElementById("welcome");
+
+    if (!welcome) {
+      return;
+    }
+
+    if (user) {
+      welcome.textContent = "👤 Welcome, " + user.email + "!";
+    } else {
+      welcome.textContent = "👤 Welcome, Guest!";
+    }
+  });
+}
+
+window.addCoin = addCoin;
+window.dailyBonus = dailyBonus;
+window.watchAd = watchAd;
+window.withdraw = withdraw;
+window.signup = signup;
+window.login = login;
+window.logout = logout;
+
+updateCoins();
+initFirebaseAuth();
