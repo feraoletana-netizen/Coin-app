@@ -4,41 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reward Game</title>
-
   <link rel="stylesheet" href="style.css">
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-
-    import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      signOut,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCKXC4ayhYXnLP-87q0C607xjimuGpwfmE",
-      authDomain: "froreward-3c873.firebaseapp.com",
-      projectId: "froreward-3c873",
-      storageBucket: "froreward-3c873.firebasestorage.app",
-      messagingSenderId: "552089097161",
-      appId: "1:552089097161:web:9db8695b2f314d44ca8e18",
-      measurementId: "G-P8C6R796NG"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    window.firebaseAuth = {
-      auth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      signOut,
-      onAuthStateChanged
-    };
-  </script>
 </head>
 
 <body>
@@ -47,86 +13,70 @@
 
     <h1>🎮 Reward Game</h1>
 
-    <div class="coin-box">
-      🪙 Your Coins
-      <span id="coins">50</span>
-    </div>
+    <h2>🪙 Your Coins: <span id="coins">0</span></h2>
 
-    <div class="section">
+    <section>
       <h2>🎁 Daily Reward</h2>
+      <button onclick="dailyBonus()">Claim Daily Reward +50</button>
+    </section>
 
-      <button onclick="dailyBonus()">
-        Claim Daily Reward +50
-      </button>
-    </div>
-
-    <div class="section">
+    <section>
       <h2>📺 Earn Coins</h2>
+      <button onclick="watchAd()">Watch Ad +10</button>
+    </section>
 
-      <button onclick="watchAd()">
-        Watch Ad +10
+    <section class="referral-box">
+      <h2>👥 Invite Friends</h2>
+
+      <p>
+        Your Referral Code:
+        <strong id="referralCode">---</strong>
+      </p>
+
+      <button onclick="shareReferral()">
+        📤 Share Invite
       </button>
-    </div>
 
-    <div class="section">
+      <p>
+        Friends Invited:
+        <strong id="referralCount">0</strong>
+      </p>
+    </section>
+
+    <section>
       <h2>💰 Withdraw</h2>
 
       <input
         type="number"
-        id="amount"
-        placeholder="Amount of Coins"
+        id="withdrawAmount"
+        placeholder="Amount of coins"
       >
 
-      <select id="method" onchange="paymentMethodChanged()">
+      <select id="paymentMethod" onchange="paymentMethodChanged()">
         <option value="">Payment method</option>
         <option value="Telebirr">Telebirr</option>
         <option value="Bank">Bank</option>
       </select>
 
-      <!-- Telebirr -->
-      <div id="telebirrFields" style="display:none;">
+      <input
+        type="text"
+        id="paymentDetails"
+        placeholder="Telebirr number / Bank account"
+      >
 
-        <input
-          type="tel"
-          id="telebirrNumber"
-          placeholder="Telebirr Number"
-        >
+      <button onclick="withdraw()">Withdraw</button>
 
-      </div>
+      <div id="withdrawalHistory"></div>
+    </section>
 
-      <!-- Bank -->
-      <div id="bankFields" style="display:none;">
-
-        <input
-          type="text"
-          id="bankName"
-          placeholder="Bank Name"
-        >
-
-        <input
-          type="text"
-          id="bankAccount"
-          placeholder="Bank Account Number"
-        >
-
-      </div>
-
-      <button onclick="withdraw()">
-        Withdraw
-      </button>
-
-    </div>
-
-    <div class="section">
+    <section>
       <h2>👤 Account</h2>
 
-      <p id="welcome">
-        👤 Welcome, Guest!
-      </p>
+      <p id="welcome">Welcome, Guest!</p>
 
       <input
         type="email"
-        id="username"
+        id="email"
         placeholder="Email"
       >
 
@@ -137,18 +87,25 @@
       >
 
       <button onclick="signup()">Sign Up</button>
-
       <button onclick="login()">Login</button>
-
       <button onclick="logout()">Logout</button>
-
-    </div>
+    </section>
 
     <p id="message"></p>
 
   </div>
 
-  <script src="script.js"></script>
+  <script type="module" src="script.js"></script>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("service-worker.js")
+          .then(() => console.log("Service Worker registered!"))
+          .catch((error) => console.error("Service Worker error:", error));
+      });
+    }
+  </script>
 
 </body>
 </html>
