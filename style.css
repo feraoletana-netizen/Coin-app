@@ -1,73 +1,88 @@
-let coins = Number(localStorage.getItem("coins")) || 0;
-let lastBonus = localStorage.getItem("lastBonus") || "";
-
-function updateCoins() {
-  document.getElementById("coins").textContent = coins;
-  localStorage.setItem("coins", coins);
+* {
+  box-sizing: border-box;
 }
 
-function addCoin() {
-  coins += 1;
-  updateCoins();
-  document.getElementById("message").textContent = "🪙 +1 Coin!";
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background: #f2f4f7;
+  color: #222;
 }
 
-function dailyBonus() {
-  const today = new Date().toISOString().split("T")[0];
-
-  if (lastBonus === today) {
-    document.getElementById("message").textContent =
-      "❌ Daily Bonus har'a fudhatameera.";
-    return;
-  }
-
-  coins += 50;
-  lastBonus = today;
-
-  localStorage.setItem("lastBonus", lastBonus);
-  updateCoins();
-
-  document.getElementById("message").textContent =
-    "🎁 +50 Coins argatte!";
+.container {
+  max-width: 500px;
+  margin: 0 auto;
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
-function watchAd() {
-  alert("📺 Demo Ad xumurame!");
-
-  coins += 10;
-  updateCoins();
-
-  document.getElementById("message").textContent =
-    "🎉 +10 Coins argatte!";
+h1 {
+  text-align: center;
+  margin-bottom: 25px;
 }
 
-function withdraw() {
-  const amount = Number(document.getElementById("amount").value);
-  const method = document.getElementById("method").value.trim();
-
-  if (amount < 100) {
-    document.getElementById("message").textContent =
-      "❌ Minimum withdrawal 100 coins.";
-    return;
-  }
-
-  if (amount > coins) {
-    document.getElementById("message").textContent =
-      "❌ Coins gahaa hin qabdu.";
-    return;
-  }
-
-  if (method === "") {
-    document.getElementById("message").textContent =
-      "❌ Telebirr ykn Bank galchi.";
-    return;
-  }
-
-  coins -= amount;
-  updateCoins();
-
-  document.getElementById("message").textContent =
-    "✅ Withdraw request galmaa'e. Method: " + method;
+h2 {
+  margin-top: 10px;
 }
 
-updateCoins();
+section {
+  margin-bottom: 18px;
+  padding: 16px;
+  border-radius: 12px;
+  background: #f8f9fa;
+}
+
+.referral-box {
+  border: 1px solid #ddd;
+}
+
+input,
+select {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  background: white;
+  color: #222;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin: 6px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  background: #222;
+  color: white;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+#coins {
+  font-weight: bold;
+}
+
+#message {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 15px;
+  min-height: 24px;
+}
+
+#welcome {
+  font-weight: bold;
+}
+
+#withdrawalHistory {
+  margin-top: 10px;
+}
