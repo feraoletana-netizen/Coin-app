@@ -631,3 +631,4 @@ window.shareReferral = shareReferral;
 updateCoins();
 updateReferralUI();
 updateAccountUI(auth.currentUser);
+updateAccountUI(auth.currentUser);
