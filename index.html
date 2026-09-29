@@ -1,1 +1,230 @@
-ggd
+<!DOCTYPE html>
+<html lang="om">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Reward Game is a coin reward app where users can earn coins and request withdrawals"
+  >
+
+  <title>Reward Game</title>
+
+  <link rel="manifest" href="manifest.json">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>Reward Game</h1>
+
+    <!-- ========================= -->
+    <!-- COINS -->
+    <!-- ========================= -->
+
+    <section>
+      <h2>
+        🪙 Your Coins:
+        <span id="coins">0</span>
+      </h2>
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- DAILY REWARD -->
+    <!-- ========================= -->
+
+    <section>
+      <h2>🎁 Daily Reward</h2>
+
+      <button type="button" onclick="dailyBonus()">
+        Claim Daily Reward +50
+      </button>
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- WATCH AD -->
+    <!-- ========================= -->
+
+    <section>
+      <h2>📺 Earn Coins</h2>
+
+      <button type="button" onclick="watchAd()">
+        Watch Ad +10
+      </button>
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- REFERRAL -->
+    <!-- ========================= -->
+
+    <section class="referral-box">
+
+      <h2>👥 Invite Friends</h2>
+
+      <p>
+        Your Referral Code:
+        <strong id="referralCode">LOADING</strong>
+      </p>
+
+      <button type="button" onclick="shareReferral()">
+        📤 Share Invite
+      </button>
+
+      <p>
+        Friends Invited:
+        <strong id="referralCount">0</strong>
+      </p>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- WITHDRAW -->
+    <!-- ========================= -->
+
+    <section>
+
+      <h2>💰 Withdraw</h2>
+
+      <input
+        type="number"
+        id="withdrawAmount"
+        placeholder="Amount of Coins"
+        min="100"
+      >
+
+      <select
+        id="paymentMethod"
+        onchange="paymentMethodChanged()"
+      >
+        <option value="">Payment method</option>
+        <option value="Telebirr">Telebirr</option>
+        <option value="Bank">Bank</option>
+      </select>
+
+      <input
+        type="text"
+        id="paymentDetails"
+        placeholder="Payment details"
+      >
+
+      <button type="button" onclick="withdraw()">
+        Withdraw
+      </button>
+
+      <div id="withdrawalHistory"></div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- ACCOUNT -->
+    <!-- ========================= -->
+
+    <section>
+
+      <h2>👤 Account</h2>
+
+      <p id="welcome">
+        Welcome, Guest!
+      </p>
+
+      <!-- EMAIL -->
+
+      <input
+        type="email"
+        id="email"
+        placeholder="Email"
+        autocomplete="email"
+      >
+
+      <!-- PASSWORD -->
+
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+        autocomplete="current-password"
+      >
+
+      <!-- SIGN UP -->
+
+      <button type="button" onclick="signup()">
+        Sign Up
+      </button>
+
+      <!-- LOGIN -->
+
+      <button type="button" onclick="login()">
+        Login
+      </button>
+
+      <!-- LOGOUT -->
+
+      <button type="button" onclick="logout()">
+        Logout
+      </button>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- MESSAGE -->
+    <!-- ========================= -->
+
+    <p id="message"></p>
+
+  </div>
+
+
+  <!-- ========================= -->
+  <!-- FIREBASE / APP SCRIPT -->
+  <!-- ========================= -->
+
+  <script
+    type="module"
+    src="script.js"
+  ></script>
+
+
+  <!-- ========================= -->
+  <!-- SERVICE WORKER -->
+  <!-- ========================= -->
+
+  <script>
+    if ("serviceWorker" in navigator) {
+
+      window.addEventListener("load", () => {
+
+        navigator.serviceWorker
+          .register("service-worker.js")
+          .then(() => {
+            console.log("Service Worker registered");
+          })
+          .catch((error) => {
+            console.error(
+              "Service Worker registration failed:",
+              error
+            );
+          });
+
+      });
+
+    }
+  </script>
+
+</body>
+
+</html>
