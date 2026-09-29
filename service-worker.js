@@ -1,17 +1,7 @@
 // Reward Game Service Worker
 
-importScripts(
-  'https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js'
-);
-
-const CACHE = "reward-game-v3";
+const CACHE = "reward-game-v4";
 const offlineFallbackPage = "offline.html";
-
-self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") {
-    self.skipWaiting();
-  }
-});
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -33,27 +23,16 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-if (workbox.navigationPreload.isSupported()) {
-  workbox.navigationPreload.enable();
-}
-
 self.addEventListener("fetch", (event) => {
+  // Always get the latest HTML from GitHub Pages
   if (event.request.mode === "navigate") {
     event.respondWith(
-      (async () => {
-        try {
-          const preloadResp = await event.preloadResponse;
-
-          if (preloadResp) {
-            return preloadResp;
-          }
-
-          return await fetch(event.request);
-        } catch (error) {
-          const cache = await caches.open(CACHE);
-          return await cache.match(offlineFallbackPage);
-        }
-      })()
+      fetch(event.request)
+        .catch(() =>
+          caches.open(CACHE).then((cache) =>
+            cache.match(offlineFallbackPage)
+          )
+        )
     );
   }
 });
